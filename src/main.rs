@@ -4,6 +4,7 @@
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+mod serial;
 mod vga_buffer;
 use core::panic::PanicInfo;
 
@@ -17,7 +18,6 @@ pub extern "C" fn _start() -> ! {
     loop {}
 }
 
-/// Loops indefinitely on panic
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
@@ -26,7 +26,7 @@ fn panic(info: &PanicInfo) -> ! {
 
 #[cfg(test)]
 fn test_runner(tests: &[&dyn Fn()]) {
-    println!("Running {} tests",  tests.len());
+    serial_println!("Running {} tests",  tests.len());
 
     for test in tests {
         test();
@@ -37,9 +37,9 @@ fn test_runner(tests: &[&dyn Fn()]) {
 
 #[test_case]
 fn trivial_assertion() {
-    print!("Trivial Assertion: ");
+    serial_print!("Trivial Assertion: ");
     assert_eq!(1, 1);
-    println!("[OK]");
+    serial_println!("[OK]");
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
