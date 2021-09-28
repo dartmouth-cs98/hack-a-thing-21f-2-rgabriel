@@ -19,8 +19,18 @@ pub extern "C" fn _start() -> ! {
 }
 
 #[panic_handler]
+#[cfg(not(test))]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
+    loop{}
+}
+
+#[panic_handler]
+#[cfg(test)]
+fn panic(info: &PanicInfo) -> ! {
+    serial_println!("[Failed]\n");
+    serial_println!("Error: {}\n", info);
+    exit_qemu(QemuExitCode::Failed);
     loop{}
 }
 
@@ -38,7 +48,7 @@ fn test_runner(tests: &[&dyn Fn()]) {
 #[test_case]
 fn trivial_assertion() {
     serial_print!("Trivial Assertion: ");
-    assert_eq!(1, 1);
+    assert_eq!(0, 1);
     serial_println!("[OK]");
 }
 
