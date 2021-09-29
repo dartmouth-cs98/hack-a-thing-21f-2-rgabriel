@@ -4,12 +4,14 @@
 #![test_runner(blog_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use blog_os::print;
 use blog_os::println;
 use core::panic::PanicInfo;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     println!("Hello, world{}", "!");
+    print!("Random numbers: {} & {}", 42, 22.0/7.0);
 
     #[cfg(test)]
     test_main();
